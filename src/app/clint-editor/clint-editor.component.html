@@ -1,0 +1,17 @@
+
+<h1 mat-dialog-title>Invite Your Friends </h1>
+    <div mat-dialog-content >
+      <!-- <p>Put here your email!</p> -->
+      <mat-form-field >
+        <input matInput  placeholder="Enter Email" name="email" [(ngModel)]="email">
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">No Thanks</button>
+      <button mat-button [mat-dialog-close]="" cdkFocusInitial (click)="sendEmail()">Ok</button>
+      <!-- <button mat-button [mat-dialog-close]="" cdkFocusInitial (click)="onNoClick()">Ok</button> -->
+      <!-- <button (click)="sendEmail('recipient@example.com', 'https://yourapp.com')">Send Email</button> -->
+
+    </div>
+ 
+  
