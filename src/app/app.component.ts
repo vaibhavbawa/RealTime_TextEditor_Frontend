@@ -1,6 +1,6 @@
-import { HttpClientModule } from '@angular/common/http';
-import { Component, SimpleChange , OnChanges} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Component, SimpleChange , OnChanges, OnInit, EventEmitter, Output} from '@angular/core';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { AngularEditorConfig, AngularEditorModule, AngularEditorService } from '@kolkov/angular-editor';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ClintEditorComponent } from './clint-editor/clint-editor.component';
 import { EmailServiceService } from '../service/email-service.service';
 import { io, Socket } from 'socket.io-client';
+import { SocketService } from '../service/socket.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -20,30 +21,29 @@ import { io, Socket } from 'socket.io-client';
     MatInputModule,
     FormsModule,
     MatButtonModule,
+    HttpClientModule,
+    ClintEditorComponent,
+    RouterLink
   ],
   providers:[AngularEditorService, EmailServiceService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'realTime_textEditor';
-
+  // roomId: string | undefined;
+    paramsData: any;
     displayContent:any
     socket:any;
-  constructor(private editorService: AngularEditorService,private dialog: MatDialog) {
-    this.socket = io('http://localhost:3000');
-    console.log("sockets",this.socket);
+  constructor(
+    private editorService: AngularEditorService,
+    private dialog: MatDialog,
+    private route: ActivatedRoute, 
+
+    ) {
+    this.socket = io('http://192.168.1.9:3000');
 
   }
-  
-
-
-
-  
-
-
-
-
 
   // Example method to get HTML content
   getContent() {
@@ -57,9 +57,10 @@ export class AppComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
     });
   }
+  paramsId:any;
   data:any;
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -105,36 +106,45 @@ export class AppComponent {
 };
 
 ngOnInit(){
-  // this.displayContent = '';
-this.data;
 this.socket.on("connect",() =>{
   console.log("connected", this.socket.id);
-})
-// this.socket.on("welcome",(s)=>{
+});
+
+// this.socket.on("msg",(s: any)=>{
 //   console.log(s);
+// });
+
+this.paramsData = this.route.snapshot.paramMap.get('id');
+
+if(this.paramsData){
+  this.joinRoom(this.paramsData)
+  console.log('ParamsData',this.paramsData);
+}
+
+}
+
+joinRoom(roomName :any){
+
+  this.socket.emit('join-room',roomName);
   
-// })
 }
 
 
 getData(){
-//  var data = document.getElementsByClassName('angular-editor-textarea');
-// //  var data2 = data.innerHtml;
-//  console.log("data",data);
-
 const elements = document.getElementsByClassName('angular-editor-textarea');
 console.log("elements",elements)
-// const displayContainer1 = document.getElementsByClassName("sourceText");
-// console.log("data",displayContainer1);
-
+//scoket.emit
+//socket.on(roomName,(data)=>{
+//if (data){
+//const elements = document.getElementsByClassName('angular-editor-textarea');
+//console.log(elements=data)
+//}
+//})
 const displayContainer = document.getElementById('display-container');
-// console.log("data",displayContainer);
 
 // Iterate through each element and display its innerHTML
 for (let i = 0; i < elements.length; i++) {
-  {
 
-  }
   const element = elements[i];
   
   console.log(element.innerHTML);
@@ -142,28 +152,14 @@ for (let i = 0; i < elements.length; i++) {
   const paragraph = document.createElement('p');
 
   paragraph.innerHTML = element.innerHTML;
-  element.setAttribute('ngModel','displayContent')
+  // element.setAttribute('ngModel','displayContent')
 
   if (displayContainer) {
     displayContainer.appendChild(paragraph);
-
   }
 
 }
 
 }
 
-// ngOnChanges(Changes:SimpleChange):void{
-    
-// }
-
-
 }
-
-
-
-// git remote add origin https://github.com/vaibhavbawa/RealTime_TextEditor_Project.git
-
-
-
-// git remote add origin https://github.com/vaibhavbawa/RealTime_TextEditor_Backend.git

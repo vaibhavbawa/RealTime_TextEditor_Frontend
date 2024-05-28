@@ -9,11 +9,16 @@ export class EmailServiceService {
 
   constructor(private http:HttpClient) { }
 
-  sendEmail(email: string, URL: string):Observable<any> {
+ sendEmail(email: string, URL: string, params:any):Observable<any> {
+// console.log(email, URL, params);
+console.log("paramssss",params);
+
+
     let body = {
       email:email,
-      URL:URL
+      URL:URL,
     }
-     return this.http.post<any>('http://localhost:5000/send-email', body);
+     return this.http.post<any>(`http://192.168.1.9:3000/send-email/${params}`, body);
   }
+
 }

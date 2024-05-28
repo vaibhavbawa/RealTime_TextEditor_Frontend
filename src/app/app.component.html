@@ -1,17 +1,12 @@
+
 <div class="p-10">
   <div class="flex justify-between mb-6">
-    <h1 class="font-serif text-2xl mb-6 " >This is a Real Time Text Editor App</h1>
-    
-    <button mat-flat-button color="primary" (click)="openDialog()" >Share</button>
-    
-    
+    <h1 class="font-serif text-2xl mb-6 ">This is a Real Time Text Editor App</h1>
+    <button mat-flat-button color="primary" (click)="openDialog()">Share</button>
   </div>
-
-<angular-editor [placeholder]="'Enter text here...'" [config]='editorConfig' [(ngModel)]="data"/>
-<!-- <input type="text" [(ngModel)]="data">x -->
-
-<div id="display-container" >{{data}}</div>
-<!-- {{displayContent}} -->
-<button (click)="getData()" class="mt-6">Get Content</button>
-
+  <angular-editor [placeholder]="'Enter text here...'" [config]='editorConfig' [(ngModel)]="data" />
+  <div id="display-container">{{data}}</div>
+  <button (click)="getData()" class="mt-6">Get Content</button><br>
 </div>
+<router-outlet/>
+
